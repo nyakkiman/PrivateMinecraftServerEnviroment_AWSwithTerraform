@@ -19,3 +19,13 @@ module "vpc" {
   vpc_name = "terraform_test_stg"
 }
 
+module "subnet" {
+  source              = "../../modules/subnet"
+  public_vpc_id = module.vpc.vpc_id
+  private_vpc_id = module.vpc.vpc_id
+  cidr_public_subnet  = "10.0.1.0/24"
+  cidr_private_subnet = "10.0.10.0/24"
+  public_subnet_name  = "terraform_test_pub_stg"
+  private_subnet_name = "terraform_test_prv_stg"
+}
+
