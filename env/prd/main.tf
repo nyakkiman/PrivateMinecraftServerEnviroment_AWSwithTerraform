@@ -19,3 +19,25 @@ module "vpc" {
   vpc_name = "terraform_test_prd"
 }
 
+module "subnet" {
+  source = "../../modules/subnet"
+  # public subnet
+  public_subnet_vpc_id      = module.vpc.vpc_id
+  public_subnet_vpc_cidr    = module.vpc.vpc_cidr_block
+  public_subnet_cidr_range  = 8
+  public_subnet_name_prefix = "terraform_test_public_product_"
+  # Declare as many public subnets as you want
+  public_subnet_numbers = {
+    "us-east-1a" = 0
+  }
+
+  # private subnet
+  private_subnet_vpc_id      = module.vpc.vpc_id
+  private_subnet_vpc_cidr    = module.vpc.vpc_cidr_block
+  private_subnet_cidr_range  = 8
+  private_subnet_name_prefix = "terraform_test_private_product_"
+  # Declare as many private subnets as you want
+  private_subnet_numbers = {
+    "us-east-1a" = 0
+  }
+}
