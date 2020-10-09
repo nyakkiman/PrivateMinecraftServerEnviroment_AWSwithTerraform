@@ -19,6 +19,13 @@ module "vpc" {
   vpc_name = "terraform_test_stg"
 }
 
+module "internet_gateway" {
+  source = "../../modules/igw"
+
+  attached_vpc_id       = module.vpc.vpc_id
+  internet_gateway_name = "terraform_test_stg_igw"
+}
+
 module "subnet" {
   source = "../../modules/subnet"
   # public subnet
@@ -43,4 +50,3 @@ module "subnet" {
     "us-east-1b" = 1
   }
 }
-
