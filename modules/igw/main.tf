@@ -1,7 +1,7 @@
 resource "aws_internet_gateway" "igw" {
-    vpc_id = var.attached_vpc_id
+  vpc_id = var.attached_vpc_id
 
-    tags = {
-        Name = "${var.internet_gateway_name}"
-    }
+  tags = {
+    Name = var.internet_gateway_name
+  }
 }
