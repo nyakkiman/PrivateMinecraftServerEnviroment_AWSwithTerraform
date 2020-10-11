@@ -33,7 +33,7 @@ module "subnet" {
   public_subnet_vpc_cidr    = module.vpc.vpc_cidr_block
   public_subnet_cidr_range  = 8
   public_subnet_name_prefix = "terraform_test_public_staging_"
-  # Declare as many public subnets as you want
+  # Specify AZ and Declare as many public subnets as you want
   public_subnet_numbers = {
     "us-east-1a" = 0
     "us-east-1b" = 1
@@ -44,9 +44,17 @@ module "subnet" {
   private_subnet_vpc_cidr    = module.vpc.vpc_cidr_block
   private_subnet_cidr_range  = 8
   private_subnet_name_prefix = "terraform_test_private_staging_"
-  # Declare as many private subnets as you want
+  # Specify AZ and Declare as many private subnets as you want
   private_subnet_numbers = {
     "us-east-1a" = 0
     "us-east-1b" = 1
   }
+}
+
+module "private_subnet_nat" {
+  source   = "../../modules/nat"
+  for_each = module.subnet.private_subnet_numbers
+
+  allocated_subnet_id = module.subnet.private_subnet_ids[each.value]
+  nat_gateway_name    = "terraform_test_private_staging_nat"
 }
