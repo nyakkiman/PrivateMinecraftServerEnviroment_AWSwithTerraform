@@ -1,15 +1,16 @@
 # allocated VPC's ID
-variable "vpcid_subnet_to_igw" {
+variable "vpcid" {
   type        = string
   description = "required argument"
 }
 
-variable "gatewayid_subnet_to_igw" {
+# target gateway
+variable "targetid_to_igw" {
   type        = string
   description = "routetable's target gateway id"
 }
 
-variable "routing_dest_cidr_from_subnet_to_igw" {
-  type        = list(string)
+variable "routing_dest_cidr_from_to_igw" {
+  type        = string
   description = "destination cidr"
 }

@@ -37,7 +37,7 @@ module "subnet" {
   # Specify AZ and declare as many public subnets as you want
   public_subnet_numbers = {
     "us-east-1a" = 0
-    "us-east-1b" = 1
+    "us-east-1c" = 1
   }
 
   # private subnet
@@ -48,7 +48,7 @@ module "subnet" {
   # Specify AZ and declare as many private subnets as you want
   private_subnet_numbers = {
     "us-east-1a" = 0
-    "us-east-1b" = 1
+    "us-east-1c" = 1
   }
 }
 
@@ -57,14 +57,38 @@ module "nat_gateway" {
   for_each = module.subnet.public_subnet_numbers
 
   allocated_subnet_id = module.subnet.public_subnet_ids[each.value]
-  nat_gateway_name    = "terraform_test_private_staging_nat"
+  nat_gateway_name    = "terraform_test_staging_nat"
 }
 
-module "route_table" {
-  source = "../../modules/rtable"
+#### routetables
+# internet gateway
+module "route_table_igw" {
+  source = "../../modules/rtable_igw"
 
-  # routetable to igw
-  vpcid_subnet_to_igw                  = module.vpc.vpc_id
-  gatewayid_subnet_to_igw              = module.internet_gateway.igw_id
-  routing_dest_cidr_from_subnet_to_igw = ["0.0.0.0/0"]
+  # routetable subnet to igw
+  vpcid                         = module.vpc.vpc_id
+  targetid_to_igw               = module.internet_gateway.igw_id
+  routing_dest_cidr_from_to_igw = "0.0.0.0/0"
 }
+
+resource "aws_route_table_association" "to_igw" {
+  # routetable subnet to igw
+  for_each = module.subnet.public_subnet_numbers
+
+  subnet_id      = module.subnet.public_subnet_ids[each.value]
+  route_table_id = module.route_table_igw.routetable_id_egress
+}
+
+# nat gateway
+module "route_table_nat" {
+  source = "../../modules/rtable_nat"
+
+  # routetable subnet to nat
+  for_each = module.subnet.public_subnet_numbers
+
+  vpcid                         = module.vpc.vpc_id
+  targetid_to_nat               = values(module.nat_gateway)[each.value].nat_ids
+  routing_dest_cidr_from_to_nat = "0.0.0.0/0"
+  association_target_id         = module.subnet.private_subnet_ids[each.value]
+}
+
