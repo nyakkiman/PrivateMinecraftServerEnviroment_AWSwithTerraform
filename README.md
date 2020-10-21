@@ -1,4 +1,3 @@
-# terraform-training_aws-backup_01
-Learn terraform through EC2 instance and AWS Backup template creation.
+# TerraformTraining-BasicNetworkEnviroment
 
-WIP
+Learn terraform through basic network enviroment(VPC, public_private subnet, internet gaweway, nat gateway, route table) building.
