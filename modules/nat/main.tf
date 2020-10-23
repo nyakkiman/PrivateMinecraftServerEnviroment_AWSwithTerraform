@@ -7,6 +7,6 @@ resource "aws_nat_gateway" "ngw" {
   subnet_id     = var.allocated_subnet_id
 
   tags = {
-    Name = var.nat_gateway_name
+    Name = var.nat_gateway_name_tag
   }
 }

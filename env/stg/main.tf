@@ -14,16 +14,16 @@ terraform {
 }
 
 module "vpc" {
-  source   = "../../modules/vpc"
-  vpc_cidr = "10.0.0.0/16"
-  vpc_name = "terraform_test_stg"
+  source       = "../../modules/vpc"
+  vpc_cidr     = "10.0.0.0/16"
+  vpc_name_tag = "terraform_test_stg"
 }
 
 module "internet_gateway" {
   source = "../../modules/igw"
 
-  attached_vpc_id       = module.vpc.vpc_id
-  internet_gateway_name = "terraform_test_stg_igw"
+  attached_vpc_id           = module.vpc.vpc_id
+  internet_gateway_name_tag = "terraform_test_stg_igw"
 }
 
 module "subnet" {
@@ -56,8 +56,8 @@ module "nat_gateway" {
   source   = "../../modules/nat"
   for_each = module.subnet.public_subnet_numbers
 
-  allocated_subnet_id = module.subnet.public_subnet_ids[each.value]
-  nat_gateway_name    = "terraform_test_staging_nat"
+  allocated_subnet_id  = module.subnet.public_subnet_ids[each.value]
+  nat_gateway_name_tag = "terraform_test_staging_nat"
 }
 
 #### routetables
@@ -92,3 +92,21 @@ module "route_table_nat" {
   association_target_id         = module.subnet.private_subnet_ids[each.value]
 }
 
+# application load balancer
+module "alb" {
+  source = "../../modules/alb"
+
+  # security group
+  # all egress allowed(default)
+  # allowed all ingress connection
+  alb_sg_name            = "alb security group settings"
+  alb_sg_attached_vpc_id = module.vpc.vpc_id
+
+  default_allow_ingress_port_from   = 0
+  default_allow_ingress_port_to     = 0
+  default_allow_ingress_protocol    = "-1"
+  default_allow_ingress_cidr_blocks = ["0.0.0.0/0"]
+
+  # alb
+  alb_use_subnets = module.subnet.public_subnet_ids
+}
