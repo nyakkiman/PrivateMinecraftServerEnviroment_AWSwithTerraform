@@ -1,9 +1,9 @@
 # name of nat gateway
-variable "nat_gateway_name" {
-    type = string
+variable "nat_gateway_name_tag" {
+  type = string
 }
 
 # allocated subnet id
 variable "allocated_subnet_id" {
-    type = string
+  type = string
 }
