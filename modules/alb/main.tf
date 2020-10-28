@@ -26,7 +26,7 @@ resource "aws_lb" "alb" {
   security_groups    = [aws_security_group.alb_sg.id]
   subnets            = var.alb_use_subnets
 
-  enable_deletion_protection = true
+  enable_deletion_protection = false
 
   # access_logs {
   #   bucket  = aws_s3_bucket.lb_logs.bucket
