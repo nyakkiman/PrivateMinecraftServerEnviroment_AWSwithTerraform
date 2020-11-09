@@ -1,14 +1,14 @@
 provider "aws" {
   profile = "default"
   version = "~> 3.0"
-  region  = "ap-northeast-1"
+  region  = "ap-south-1"
 }
 
 terraform {
   backend "s3" {
-    bucket  = "minecraft-enviroment-test01"
-    region  = "ap-northeast-1"
-    key     = "enviroment/prd/terraform.tfstate"
+    bucket  = "aomaru-terraform-practice"
+    region  = "us-east-1"
+    key     = "enviroment/minecraft/prd/terraform.tfstate"
     encrypt = true
   }
 }
@@ -39,7 +39,7 @@ module "subnet" {
   public_subnet_name_prefix = "minecraft_test_public_prd_"
   # Specify AZ and declare as many public subnets as you want
   public_subnet_numbers = {
-    "ap-northeast-1a" = 0
+    "ap-south-1a" = 0
   }
 }
 
@@ -71,7 +71,7 @@ module "ec2_sg" {
   source = "../../modules/sg"
 
   sg_config = {
-    name                  = "ec2-sg"
+    name                  = "ec2-minecraft-sg"
     vpc_id                = module.vpc.vpc_id
     ingress_protocol_port = [{ protocol = "icmp", port = -1 }, { protocol = "tcp", port = 22 }, { protocol = "tcp", port = 25565 }]
     ingress_cidr_blocks   = ["0.0.0.0/0"]
@@ -93,7 +93,7 @@ resource "aws_instance" "ec2_instance" {
 
   root_block_device {
     volume_type = "gp2"
-    volume_size = 20
+    volume_size = 16
   }
 
   tags = {

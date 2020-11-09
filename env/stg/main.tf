@@ -6,9 +6,9 @@ provider "aws" {
 
 terraform {
   backend "s3" {
-    bucket  = "minecraft-enviroment-test01"
-    region  = "ap-northeast-1"
-    key     = "enviroment/stg/terraform.tfstate"
+    bucket  = "aomaru-terraform-practice"
+    region  = "us-east-1"
+    key     = "enviroment/minecraft/stg/terraform.tfstate"
     encrypt = true
   }
 }
