@@ -6,6 +6,7 @@ provider "aws" {
 
 terraform {
   backend "s3" {
+    # Change bucket name to a unique name
     bucket  = "your-bucket-name"
     region  = "us-east-1"
     key     = "enviroment/minecraft/prd/terraform.tfstate"
