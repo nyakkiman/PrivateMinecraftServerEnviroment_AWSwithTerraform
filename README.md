@@ -29,5 +29,5 @@ exec java -Xms1G -Xmx1G -jar server.jar --nogui
 9. execute boot script with nohup command like
 
 ```
-nohup sh minecraftserver.sh &
+nohup sh start.sh &
 ```
