@@ -6,7 +6,7 @@ provider "aws" {
 
 terraform {
   backend "s3" {
-    bucket  = "aomaru-terraform-practice"
+    bucket  = "your-bucket-name"
     region  = "us-east-1"
     key     = "enviroment/minecraft/prd/terraform.tfstate"
     encrypt = true
@@ -19,14 +19,14 @@ terraform {
 module "vpc" {
   source       = "../../modules/vpc"
   vpc_cidr     = "10.0.0.0/16"
-  vpc_name_tag = "minecraft_test"
+  vpc_name_tag = "minecraft_vpc"
 }
 
 module "internet_gateway" {
   source = "../../modules/igw"
 
   attached_vpc_id           = module.vpc.vpc_id
-  internet_gateway_name_tag = "minecraft_env_test_igw"
+  internet_gateway_name_tag = "minecraft_env_igw"
 }
 
 module "subnet" {
@@ -36,7 +36,7 @@ module "subnet" {
   public_subnet_vpc_id      = module.vpc.vpc_id
   public_subnet_vpc_cidr    = module.vpc.vpc_cidr_block
   public_subnet_cidr_range  = 8
-  public_subnet_name_prefix = "minecraft_test_public_prd_"
+  public_subnet_name_prefix = "minecraft_public_prd_"
   # Specify AZ and declare as many public subnets as you want
   public_subnet_numbers = {
     "ap-south-1a" = 0
@@ -97,7 +97,7 @@ resource "aws_instance" "ec2_instance" {
   }
 
   tags = {
-    Name = "minecraft test"
+    Name = "minecraft private server"
   }
 }
 
