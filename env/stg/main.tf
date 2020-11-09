@@ -1,14 +1,15 @@
 provider "aws" {
   profile = "default"
   version = "~> 3.0"
-  region  = "ap-northeast-1"
+  region  = "ap-south-1"
 }
 
 terraform {
   backend "s3" {
-    bucket  = "minecraft-enviroment-test01"
-    region  = "ap-northeast-1"
-    key     = "enviroment/stg/terraform.tfstate"
+    # Change bucket name to a unique name
+    bucket  = "your-bucket-name"
+    region  = "us-east-1"
+    key     = "enviroment/minecraft/stg/terraform.tfstate"
     encrypt = true
   }
 }
@@ -19,14 +20,14 @@ terraform {
 module "vpc" {
   source       = "../../modules/vpc"
   vpc_cidr     = "10.1.0.0/16"
-  vpc_name_tag = "minecraft_test"
+  vpc_name_tag = "minecraft_vpc_stg"
 }
 
 module "internet_gateway" {
   source = "../../modules/igw"
 
   attached_vpc_id           = module.vpc.vpc_id
-  internet_gateway_name_tag = "minecraft_env_test_igw"
+  internet_gateway_name_tag = "minecraft_env_stg_igw"
 }
 
 module "subnet" {
@@ -36,10 +37,10 @@ module "subnet" {
   public_subnet_vpc_id      = module.vpc.vpc_id
   public_subnet_vpc_cidr    = module.vpc.vpc_cidr_block
   public_subnet_cidr_range  = 8
-  public_subnet_name_prefix = "minecraft_test_public_stg_"
+  public_subnet_name_prefix = "minecraft_public_stg_"
   # Specify AZ and declare as many public subnets as you want
   public_subnet_numbers = {
-    "ap-northeast-1a" = 0
+    "ap-south-1a" = 0
   }
 }
 
@@ -71,7 +72,7 @@ module "ec2_sg" {
   source = "../../modules/sg"
 
   sg_config = {
-    name                  = "ec2-sg"
+    name                  = "ec2-minecraft-sg"
     vpc_id                = module.vpc.vpc_id
     ingress_protocol_port = [{ protocol = "icmp", port = -1 }, { protocol = "tcp", port = 22 }, { protocol = "tcp", port = 25565 }]
     ingress_cidr_blocks   = ["0.0.0.0/0"]
@@ -93,11 +94,11 @@ resource "aws_instance" "ec2_instance" {
 
   root_block_device {
     volume_type = "gp2"
-    volume_size = 20
+    volume_size = 16
   }
 
   tags = {
-    Name = "minecraft test"
+    Name = "minecraft private server"
   }
 }
 
