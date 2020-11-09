@@ -16,7 +16,7 @@
 1. `yum update -y`
 1. `yum -y install java-1.8.0-openjdk-devel.x86_64 `
 1. `wget https://launcher.mojang.com/v1/objects/f02f4473dbf152c23d7d484952121db0b36698cb/server.jar`
-1. `java -Xms1G -Xmx1G -jar minecraft_server.1.16.3.jar --nogui`
+1. `java -Xms1G -Xmx1G -jar server.jar --nogui`
 1. open "eura.txt" with text editor and change `eula=false` to `eula=true` .
 1. create boot script (`vi start.sh`) and change permission to executable
 
