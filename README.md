@@ -11,23 +11,77 @@
 
 ## Setup minecraft server
 
-1. Connect to elastic ip with private key `"ssh -i path/to/private/key ec2-user@elasticip"`
-1. After login EC2, get to be superuser `sudo su`
-1. `yum update -y`
-1. `yum -y install java-1.8.0-openjdk-devel.x86_64 `
-1. `wget https://launcher.mojang.com/v1/objects/f02f4473dbf152c23d7d484952121db0b36698cb/server.jar`
-1. `java -Xms1G -Xmx1G -jar server.jar --nogui`
-1. open "eura.txt" with text editor and change `eula=false` to `eula=true` .
-1. create boot script (`vi start.sh`) and change permission to executable
+1. Check elastic ip
+
+```
+aws ec2 describe-instances --region=ap-south-1 | grep PublicIpAddress
+```
+
+2. Connect to elastic ip with private key
+
+```
+ssh -i path/to/private/key ec2-user@10.20.30.40
+```
+
+3. After login EC2, get to be superuser
+
+```
+sudo su
+```
+
+4. Update enviroment
+
+```
+yum update -y
+```
+
+5. Install openjdk 8
+
+```
+yum -y install java-1.8.0-openjdk-devel.x86_64
+```
+
+6. Download server program from [here](https://www.minecraft.net/en-us/download/server)
+
+```
+wget https://launcher.mojang.com/v1/objects/f02f4473dbf152c23d7d484952121db0b36698cb/server.jar
+```
+
+7. Initialize server program
+
+```
+java -Xms1G -Xmx1G -jar server.jar --nogui
+```
+
+8. After "eura.txt" created, open it with text editor and change `eula=false` to `eula=true`
+9. create boot script (e.g. `touch start.sh`) with executable permission settings
 
 ```
 #!/bin/sh
 cd "$(dirname "$0")"
-exec java -Xms1G -Xmx1G -jar server.jar --nogui
+nohup exec java -Xms1G -Xmx1G -jar server.jar --nogui &
 ```
 
-9. execute boot script with nohup command like
+### Auto Restart process(\*Optional)
+
+1. Edit `start.sh`
 
 ```
-nohup sh start.sh &
+#!/bin/bash
+cd /usr/local/bin/minecraft # change path to server.jar
+
+# check process count
+PCOUNT=$(ps -ef | grep "server.jar --nogui" | grep -v "grep" | wc -l)
+
+# start process if it's not started
+if [ "$PCOUNT" -lt 1 ]; then
+  nohup exec java -Xms1G -Xmx1G -jar server.jar --nogui &
+fi
+```
+
+2. Set crontab with interval time
+
+```
+# minecraft process checker
+*/15 * * * * /home/ec2-user/minecraftserver.sh
 ```
