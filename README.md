@@ -75,7 +75,7 @@ PCOUNT=$(ps -ef | grep "server.jar --nogui" | grep -v "grep" | wc -l)
 
 # start process if it's not started
 if [ "$PCOUNT" -lt 1 ]; then
-  nohup exec java -Xms1G -Xmx1G -jar server.jar --nogui &
+  nohup java -Xms1G -Xmx1G -jar server.jar --nogui & 2>>error.log
 fi
 ```
 
