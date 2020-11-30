@@ -9,7 +9,7 @@
 1. `terraform init`
 1. `terraform apply`
 
-## Setup minecraft server
+## Setup application
 
 1. Check elastic ip
 
@@ -20,7 +20,7 @@ aws ec2 describe-instances --region=ap-south-1 | grep PublicIpAddress
 2. Connect to elastic ip with private key
 
 ```
-ssh -i path/to/private/key ec2-user@10.20.30.40
+ssh -i path/to/private/key ec2-user@<elasticip>
 ```
 
 3. After login EC2, get to be superuser
